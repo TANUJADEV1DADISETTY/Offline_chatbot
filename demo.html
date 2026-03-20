@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Offline Chatbot Terminal</title>
+<style>
+  body, html { 
+    background-color: #0c0c0c; 
+    color: #cccccc; 
+    font-family: 'Consolas', 'Courier New', monospace; 
+    margin: 0; 
+    padding: 0; 
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
+  #terminal { 
+    padding: 20px; 
+    font-size: 18px; 
+    line-height: 1.4;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+  }
+  .prompt { color: #00ff00; font-weight: bold; }
+  .command { color: #ffffff; }
+  .info { color: #569cd6; }
+  .success { color: #4ec9b0; }
+  .query { color: #ce9178; font-style: italic; }
+  .response { color: #dcdcaa; padding-left: 20px; border-left: 2px solid #333; margin: 10px 0; }
+  .cursor { display: inline-block; width: 10px; height: 20px; background-color: #cccccc; animation: blink 1s step-end infinite; vertical-align: middle; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+<div id="terminal"></div>
+<script>
+  const terminal = document.getElementById('terminal');
+  
+  const script = [
+    { type: 'line', content: '<span class="prompt">PS D:\\Gpp_Tasks\\offline-chatbot&gt;</span> <span class="command">python chatbot.py</span>', delay: 1000 },
+    { type: 'text', content: 'Initializing Ollama Llama 3.2 3B connection...', class: 'info', delay: 1000 },
+    { type: 'text', content: 'Loading prompt templates...', class: 'info', delay: 500 },
+    { type: 'text', content: 'Connected to local Ollama server at http://localhost:11434', class: 'success', delay: 800 },
+    { type: 'empty', delay: 500 },
+    { type: 'text', content: 'Processing 20 Customer Queries...', class: 'info', delay: 500 },
+    { type: 'empty', delay: 300 },
+    
+    // Query 1
+    { type: 'text', content: 'Query 1/20:', class: 'info', delay: 200 },
+    { type: 'text', content: 'Customer: "My discount code is not working at checkout."', class: 'query', delay: 400 },
+    { type: 'text', content: '  -> Zero-Shot: "Please double check the code was entered correctly. Most codes fail due to typos or expiration."', class: 'response', delay: 1200 },
+    { type: 'text', content: '  -> One-Shot:  "I\'m sorry to hear that. Could you please share the coupon code? I can verify if it\'s still active or apply it manually to your order."', class: 'response', delay: 1500 },
+    
+    // Query 2
+    { type: 'text', content: 'Query 2/20:', class: 'info', delay: 200 },
+    { type: 'text', content: 'Customer: "How do I track the shipping status of my recent order?"', class: 'query', delay: 400 },
+    { type: 'text', content: '  -> Zero-Shot: "You can find tracking info in your email or account dashboard."', class: 'response', delay: 1000 },
+    { type: 'text', content: '  -> One-Shot:  "You can track your order directly on our site using your Order ID. Here is the link: ChicBoutique.com/track. Simply enter your email and order number."', class: 'response', delay: 1300 },
+    
+    { type: 'text', content: '...', class: 'info', delay: 500 },
+    { type: 'text', content: 'Query 20/20:', class: 'info', delay: 200 },
+    { type: 'text', content: 'Customer: "Is my credit card information secure on your website?"', class: 'query', delay: 400 },
+    { type: 'text', content: '  -> One-Shot:  "Absolutely. We use industry-standard 256-bit SSL encryption to ensure your payment details are fully protected. We never store your full card info on our servers."', class: 'response', delay: 1500 },
+    
+    { type: 'empty', delay: 800 },
+    { type: 'text', content: 'Generation Complete.', class: 'success', delay: 400 },
+    { type: 'text', content: 'Evaluation results saved to: <span class="command">eval/results.md</span>', class: 'success', delay: 400 },
+    { type: 'line', content: '<span class="prompt">PS D:\\Gpp_Tasks\\offline-chatbot&gt;</span><span class="cursor"></span>', delay: 1000 }
+  ];
+
+  async function runDemo() {
+    for (const step of script) {
+      const div = document.createElement('div');
+      if (step.type === 'line') {
+        div.innerHTML = step.content;
+      } else if (step.type === 'text') {
+        div.className = step.class || '';
+        div.textContent = step.content;
+      } else if (step.type === 'empty') {
+        div.innerHTML = '&nbsp;';
+      }
+      terminal.appendChild(div);
+      terminal.scrollTop = terminal.scrollHeight;
+      await new Promise(r => setTimeout(r, step.delay));
+    }
+  }
+
+  runDemo();
+</script>
+</body>
+</html>
